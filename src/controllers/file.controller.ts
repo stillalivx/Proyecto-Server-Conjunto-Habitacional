@@ -1,7 +1,6 @@
 import * as fs from "fs";
 import * as path from 'path';
 
-
 import IRegister from "../interfaces/register.interface";
 
 export default class File {
@@ -26,5 +25,10 @@ export default class File {
         console.log(`WRITING DATA: ${JSON.stringify(register)}`);
 
         fs.writeFileSync(this.path, JSON.stringify(data));
+    }
+
+    getAll(): IRegister[] {
+        const file: string = fs.readFileSync(this.path).toString();
+        return JSON.parse(file);
     }
 }

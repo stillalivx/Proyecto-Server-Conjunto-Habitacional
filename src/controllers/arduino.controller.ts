@@ -29,7 +29,7 @@ export default class Arduino {
             }
         });
 
-        this.parser.on("data", data => {
+        this.parser.on('data', data => {
             try {
                 const register: IRegister = JSON.parse(data);
 
@@ -38,7 +38,7 @@ export default class Arduino {
                 register.date = new Date().toISOString();
 
                 this.file.write(register);
-                this.socket.io.emit("append_data", register);
+                this.socket.io.emit('data', register);
             } catch (e) {
                 console.log(`ERROR: ${e}`);
             }
