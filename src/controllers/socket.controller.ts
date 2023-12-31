@@ -39,6 +39,22 @@ export default class SocketIO {
 
                 this.io.emit('append-building', newBuilding);
             });
+
+            socket.on('delete-building', (id: number) => {
+                console.log(`REMOVING BUILDING WITH ID '${ id }'`);
+
+                const buildingDeletedId = this.config.deleteBuilding(id);
+
+                this.io.emit('delete-building-confirmation', buildingDeletedId);
+            })
+
+            socket.on('update-building', (updateData: IBuilding) => {
+                console.log(`UPDATING BUILDING WITH ID '${ updateData.id }'`);
+
+                const updatedBuilding = this.config.updateBuilding(updateData);
+
+                this.io.emit('update-building-confirmation', updatedBuilding);
+            });
         });
     }
 }

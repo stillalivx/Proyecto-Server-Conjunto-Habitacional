@@ -10,7 +10,13 @@ export default class Config {
         this.path = path.join(__dirname, '../..', file);
 
         const initialConfigStructure: IConfig = {
-            buildings: []
+            buildings: [],
+            tankers: [],
+            ia: {
+                trainingWeeks: 3,
+                timeFill: '07:00',
+                extraPercent: 3
+            }
         };
 
         if (!fs.existsSync(this.path)) {
@@ -18,7 +24,7 @@ export default class Config {
         }
     }
 
-    addBuilding(newBuilding: IBuilding) {
+    addBuilding(newBuilding: IBuilding): IBuilding {
         if (!newBuilding.alias) {
             throw new Error('No se ha asignado un alias al nuevo edificio');
         }
@@ -49,7 +55,36 @@ export default class Config {
         return newBuilding;
     }
 
-    getConfig() {
+    deleteBuilding(id: number): number {
+        if (!id) throw new Error('No se ha especificado el id del edificio que se desea eliminar');
+
+        const config: IConfig = this.getConfig();
+
+        config.buildings = config.buildings.filter(b => b.id !== id);
+
+        console.log(`DELETE DATA: ${id}`);
+
+        fs.writeFileSync(this.path, JSON.stringify(config));
+
+        return id;
+    }
+
+    updateBuilding(building: IBuilding): IBuilding {
+        if (!building.id) throw new Error('No se ha especificado el id del edificio que se desea eliminar');
+
+        const config = this.getConfig();
+        const idxBuildingToUpdate = config.buildings.findIndex(b => b.id === building.id);
+
+        if (idxBuildingToUpdate < 0) throw new Error('No se ha encontrad el edificio que se desea actualizar');
+
+        config.buildings[idxBuildingToUpdate] = building;
+
+        fs.writeFileSync(this.path, JSON.stringify(config));
+
+        return building;
+    }
+
+    getConfig(): IConfig {
         const config: string = fs.readFileSync(this.path).toString();
         return JSON.parse(config);
     }
