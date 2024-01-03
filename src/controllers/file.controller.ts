@@ -16,11 +16,15 @@ export default class File {
         }
     }
 
-    write(register: IRegister) {
+    write(register: IRegister | IRegister[]) {
         const file: string = fs.readFileSync(this.path).toString();
         const data: IRegister[] = JSON.parse(file);
 
-        data.push(register);
+        if (Array.isArray(register)) {
+            data.push(...register)
+        } else {
+            data.push(register);
+        }
 
         console.log(`WRITING DATA: ${JSON.stringify(register)}`);
 

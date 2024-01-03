@@ -3,16 +3,24 @@ import { createServer, Server } from "http";
 import File from "./file.controller";
 import Config from './config.controller';
 import { IBuilding } from '../interfaces/config.interface';
+import IRegister from '../interfaces/register.interface';
 
 export default class SocketIO {
     private readonly server: Server;
     public readonly io: IOServer;
+    private date: Date;
 
     constructor(
         port: number,
         private readonly file: File,
         private readonly config: Config
     ) {
+        const allStoredData = this.file.getAll();
+        const lastDate = allStoredData[allStoredData.length - 1].date;
+
+        this.date = new Date(lastDate);
+        this.date.setHours(this.date.getHours() + 1);
+
         this.server = createServer();
         this.io = new IOServer(this.server, {
             cors: {}
@@ -55,6 +63,35 @@ export default class SocketIO {
 
                 this.io.emit('update-building-confirmation', updatedBuilding);
             });
+
+            socket.on('requiere-all', () => {
+                console.log(`REQUIERE ALL DATA FROM ID ${socket.id}`);
+
+                this.io.emit('get-required-all', this.file.getAll());
+            });
+
+            setInterval(() => {
+                console.log('NEW DATA GENERATED');
+
+                const config = this.config.getConfig();
+                const buildings = config.buildings;
+                const newRegisters: IRegister[] = [];
+
+                for (const building of buildings) {
+                    const register: IRegister = {
+                        waterTank: building.id,
+                        level: Math.floor(Math.random() * building.capacity),
+                        date: this.date.toISOString()
+                    };
+
+                    newRegisters.push(register);
+                }
+
+                socket.emit('append-new-data', newRegisters);
+
+                this.file.write(newRegisters);
+                this.date.setHours(this.date.getHours() + 1);
+            }, 60000)
         });
     }
 }

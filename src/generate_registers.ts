@@ -51,23 +51,23 @@ const config: IConfig = {
   }
 };
 
-// let date = new Date();
-//
-// for (let i = 0; i < config.ia.trainingWeeks; i++) {
-//   for (let j = 0; j < 24 * 7 * 4 * 6; j++) {
-//     date.setHours(date.getHours() + 1);
-//
-//     for (const building of config.buildings) {
-//       const newRegister: IRegister = {
-//         waterTank: building.id,
-//         date: date.toISOString(),
-//         level: Math.floor(Math.random() * building.capacity)
-//       };
-//
-//       registers.push(newRegister);
-//     }
-//   }
-// }
+let date = new Date();
 
-// fs.writeFileSync('./water_data.json', JSON.stringify(registers));
-fs.writeFileSync('../config.json', JSON.stringify(config));
+for (let i = 0; i < config.ia.trainingWeeks; i++) {
+  for (let j = 0; j < 24 * 7 * 4 * 6; j++) {
+    date.setHours(date.getHours() + 1);
+
+    for (const building of config.buildings) {
+      const newRegister: IRegister = {
+        waterTank: building.id,
+        date: date.toISOString(),
+        level: Math.floor(Math.random() * building.capacity)
+      };
+
+      registers.push(newRegister);
+    }
+  }
+}
+
+fs.writeFileSync('./water_data.json', JSON.stringify(registers));
+// fs.writeFileSync('../config.json', JSON.stringify(config));
