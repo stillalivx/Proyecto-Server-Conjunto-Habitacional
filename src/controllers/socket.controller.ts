@@ -37,7 +37,7 @@ export default class SocketIO {
         this.io.on('connection', (socket: Socket) => {
             console.log(`NEW_CONNECTION: ${socket.id}`);
 
-            socket.emit('get-all', this.file.getAll())
+            socket.emit('get-all', this.file.getAll());
             socket.emit('get-config', this.config.getConfig());
 
             socket.on('new-building', (data: IBuilding) => {
@@ -68,6 +68,11 @@ export default class SocketIO {
                 console.log(`REQUIERE ALL DATA FROM ID ${socket.id}`);
 
                 this.io.emit('get-required-all', this.file.getAll());
+            });
+
+            socket.on('hello_word', (data) => {
+                console.log('Hello World');
+                console.log(data);
             });
 
             setInterval(() => {
