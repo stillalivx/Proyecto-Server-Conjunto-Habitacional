@@ -12,10 +12,11 @@ export default class SocketIO {
 
     constructor(
         port: number,
-        private readonly file: File,
+        private readonly fileBuildings: File,
+        private readonly fileTanker: File,
         private readonly config: Config
     ) {
-        const allStoredData = this.file.getAll();
+        const allStoredData = this.fileBuildings.getAll();
         const lastDate = allStoredData[allStoredData.length - 1].date;
 
         this.date = new Date(lastDate);
@@ -37,7 +38,8 @@ export default class SocketIO {
         this.io.on('connection', (socket: Socket) => {
             console.log(`NEW_CONNECTION: ${socket.id}`);
 
-            socket.emit('get-all', this.file.getAll());
+            socket.emit('get-all', this.fileBuildings.getAll());
+            socket.emit('get-all-tanker', this.fileTanker.getAll());
             socket.emit('get-config', this.config.getConfig());
 
             socket.on('new-building', (data: IBuilding) => {
@@ -67,7 +69,7 @@ export default class SocketIO {
             socket.on('requiere-all', () => {
                 console.log(`REQUIERE ALL DATA FROM ID ${socket.id}`);
 
-                this.io.emit('get-required-all', this.file.getAll());
+                this.io.emit('get-required-all', this.fileBuildings.getAll());
             });
 
             socket.on('update-ia-config', (updatedData: IIA) => {
@@ -109,9 +111,16 @@ export default class SocketIO {
                 newRegisters.push(register);
             }
 
-            this.io.emit('append-new-data', newRegisters);
+            const registerTanker = {
+                level: Math.floor(Math.random() * config.tanker.capacity),
+                date: this.date.toISOString()
+            };
 
-            this.file.write(newRegisters);
+            this.io.emit('append-new-data', newRegisters);
+            this.io.emit('append-new-data-tanker', registerTanker);
+
+            this.fileBuildings.write(newRegisters);
+            this.fileTanker.write(registerTanker);
             this.date.setHours(this.date.getHours() + 1);
         }, 60000);
     }

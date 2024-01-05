@@ -1,8 +1,10 @@
 import { IConfig } from './interfaces/config.interface';
-import { IRegister } from './interfaces/register.interface';
+import { IRegister, ITankerRegister } from './interfaces/register.interface';
 import * as fs from 'fs';
+import { createSecurePair } from 'node:tls';
 
-const registers = [];
+const registers: IRegister[] = [];
+const registersTanker: ITankerRegister[] = [];
 
 const config: IConfig = {
   buildings: [
@@ -65,5 +67,21 @@ for (let i = 0; i < config.ia.trainingWeeks; i++) {
   }
 }
 
+date = new Date()
+
+for (let i = 0; i < config.ia.trainingWeeks; i++) {
+  for (let j = 0; j < 24 * 7 * 4 * 6; j++) {
+    date.setHours(date.getHours() + 1);
+
+    const newRegister: ITankerRegister = {
+      level: Math.floor(Math.random() * config.tanker.capacity),
+      date: date.toISOString()
+    };
+
+    registersTanker.push(newRegister);
+  }
+}
+
 fs.writeFileSync('../water_data.json', JSON.stringify(registers));
 fs.writeFileSync('../config.json', JSON.stringify(config));
+fs.writeFileSync('../tanker_data.json', JSON.stringify(registersTanker));
