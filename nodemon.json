@@ -1,3 +1,3 @@
 {
-  "ignore": ["water_data.json", "config.json"]
+  "ignore": ["water_data.json", "config.json", "tanker_data.json"]
 }
