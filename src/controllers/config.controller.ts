@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
-import { IBuilding, IConfig } from '../interfaces/config.interface';
+import { IBuilding, IConfig, IIA, ITanker } from '../interfaces/config.interface';
 
 export default class Config {
     path: string;
@@ -11,10 +11,12 @@ export default class Config {
 
         const initialConfigStructure: IConfig = {
             buildings: [],
-            tankers: [],
+            tanker: {
+                capacity: 0
+            },
             ia: {
                 trainingWeeks: 3,
-                timeFill: '07:00',
+                timeFill: 3,
                 extraPercent: 3
             }
         };
@@ -84,8 +86,32 @@ export default class Config {
         return building;
     }
 
+    setIAConfig(newConfig: IIA): IIA {
+        const config = this.getConfig();
+
+        config.ia = newConfig;
+
+        this.saveConfig(config);
+
+        return newConfig;
+    }
+
+    updateTanker(updatedTanker: ITanker): ITanker {
+        const config = this.getConfig();
+
+        config.tanker = updatedTanker;
+
+        this.saveConfig(config);
+
+        return updatedTanker;
+    }
+
     getConfig(): IConfig {
         const config: string = fs.readFileSync(this.path).toString();
         return JSON.parse(config);
+    }
+
+    saveConfig(config: IConfig) {
+        fs.writeFileSync(this.path, JSON.stringify(config));
     }
 }

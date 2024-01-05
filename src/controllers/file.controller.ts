@@ -1,7 +1,7 @@
 import * as fs from "fs";
 import * as path from 'path';
 
-import IRegister from "../interfaces/register.interface";
+import { IRegister, ITankerRegister } from "../interfaces/register.interface";
 
 export default class File {
     path: string;
@@ -16,9 +16,9 @@ export default class File {
         }
     }
 
-    write(register: IRegister | IRegister[]) {
+    write<T extends ITankerRegister | IRegister>(register: T | T[]) {
         const file: string = fs.readFileSync(this.path).toString();
-        const data: IRegister[] = JSON.parse(file);
+        const data: T[] = JSON.parse(file);
 
         if (Array.isArray(register)) {
             data.push(...register)

@@ -1,6 +1,6 @@
 export interface IConfig {
     buildings: IBuilding[];
-    tankers: ITanker[]
+    tanker: ITanker
     ia: IIA;
 }
 
@@ -16,13 +16,11 @@ export interface IBuilding {
 }
 
 export interface ITanker {
-    id: number;
-    alias: string;
     capacity: number;
 }
 
 export interface IIA {
     trainingWeeks: number;
-    timeFill: string;
+    timeFill: number;
     extraPercent: number;
 }

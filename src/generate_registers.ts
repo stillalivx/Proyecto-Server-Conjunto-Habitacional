@@ -1,5 +1,5 @@
 import { IConfig } from './interfaces/config.interface';
-import IRegister from './interfaces/register.interface';
+import { IRegister } from './interfaces/register.interface';
 import * as fs from 'fs';
 
 const registers = [];
@@ -37,17 +37,13 @@ const config: IConfig = {
       residents: 31
     },
   ],
-  tankers: [
-    {
-      id: 0,
-      alias: 'Cisterna',
-      capacity: 10000
-    }
-  ],
+  tanker: {
+    capacity: 10000
+  },
   ia: {
     trainingWeeks: 3,
     extraPercent: 3,
-    timeFill: '03:00'
+    timeFill: 3
   }
 };
 
@@ -69,5 +65,5 @@ for (let i = 0; i < config.ia.trainingWeeks; i++) {
   }
 }
 
-fs.writeFileSync('./water_data.json', JSON.stringify(registers));
-// fs.writeFileSync('../config.json', JSON.stringify(config));
+fs.writeFileSync('../water_data.json', JSON.stringify(registers));
+fs.writeFileSync('../config.json', JSON.stringify(config));
